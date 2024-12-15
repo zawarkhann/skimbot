@@ -1,0 +1,6 @@
+.doc-viewer-container iframe {
+    height: 100%;
+    width: 100%;
+    transform: scale(1.2); /* Scale content if needed */
+    transform-origin: top left; /* Ensure scaling doesn't shift */
+  }

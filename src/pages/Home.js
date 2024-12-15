@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom"
 
 const HomePage = () => {
-  const { globalFiles } = useAppContext();
+  const { globalFiles, setfilename } = useAppContext();
   const navigate = useNavigate();
 
   // Only show the last 5 files uploaded
@@ -18,6 +18,13 @@ const HomePage = () => {
     else return "/txt.png";
     return "/default.png";
   };
+
+  const handleclick=(file)=>{
+    setfilename(file.name);
+    navigate("/display", {
+      state: { file }, // Pass file as state
+    })
+  }
 
   return (
     <>
@@ -46,9 +53,8 @@ const HomePage = () => {
               key={index}
               className="bg-[#EEF2FF] p-4 rounded-lg shadow-md flex flex-col items-center text-center"
               onClick={() =>
-                navigate(`/chat/${encodeURIComponent(file.name)}`, {
-                  state: { file },
-                })
+                
+               handleclick(file)
               }
             >
               {/* File Logo */}

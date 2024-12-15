@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@cyntler/react-doc-viewer": "^1.17.0",
     "cra-template": "1.2.0",
+    "docx-preview": "^0.3.3",
+    "html2pdf.js": "^0.10.2",
+    "mammoth": "^1.8.0",
     "pdfjs-dist": "^4.4.168",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

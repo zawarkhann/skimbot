@@ -1,12 +1,22 @@
 import React from "react";
+import Docviewer, {DocViewerRenderers} from "@cyntler/react-doc-viewer"
 import { useLocation, useParams } from "react-router-dom";
+import DocViewer from "@cyntler/react-doc-viewer";
+// import "./ChatPage.css"
 
 const ChatPage = () => {
   const { state } = useLocation(); // Get file passed as state
   const { fileName } = useParams(); // Get file name from URL
 
+
   const file = state?.file;
 
+  const docs=[
+    {uri: "https://calibre-ebook.com/downloads/demos/demo.docx",
+      fileType: "docx",
+      fileName: "demo.docx"
+    }
+  ]
   return (
     <>
       <div className="flex flex-col items-center justify-center mt-10">
@@ -29,6 +39,12 @@ const ChatPage = () => {
             File data not available. Please return to the homepage.
           </p>
         )}
+
+<DocViewer
+  documents={docs}
+  pluginRenderers={DocViewerRenderers}
+  className="doc-viewer-container"
+/>
       </div>
     </>
   );
