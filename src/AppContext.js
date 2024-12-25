@@ -53,6 +53,8 @@ export const AppProvider = ({ children }) => {
         userMessages,
         addMessage,
         clearMessages, // Add clearMessages to the context
+        aiResponses,
+        setUserMessages
       }}
     >
       {children}

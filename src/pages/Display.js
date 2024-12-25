@@ -3,11 +3,14 @@ import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useAppContext } from "../AppContext";
-import './Display.css'
+import './Display.css';
+import { pdfjs } from 'react-pdf';
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
 
 const Chat = () => {
   const location = useLocation();
-  const { filename, userMessages, addMessage, clearMessages } = useAppContext();
+  const { filename, userMessages, clearMessages, aiResponses,setUserMessages } = useAppContext();
   const [inputMessage, setInputMessage] = useState("");
   const [currentFile, setCurrentFile] = useState(location.state?.file || null);
   const [fileURL, setFileURL] = useState(null);
@@ -15,6 +18,41 @@ const Chat = () => {
   const [loading, setLoading] = useState(true);
   const chatContainerRef = useRef(null);
 
+  const addMessage = async (userMessage) => {
+    setUserMessages(prev => [...prev, { type: "user", text: userMessage }]);
+    
+    try {
+      const formData = new FormData();
+      formData.append('user_id', '1');
+      formData.append('query', userMessage);
+      
+      if (currentFile && (fileType === 'txt' || fileType === 'pdf')) {
+        formData.append('file', currentFile);
+      }
+
+      // Create custom axios instance with CORS configuration
+      const axiosInstance = axios.create({
+        baseURL: 'https://skimbot-server-5ffb32df2cc8.herokuapp.com',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json',
+        },
+        withCredentials: false
+      });
+      
+      const response = await axiosInstance.post('/chatting/', formData);
+      
+      if (response.data?.response) {
+        setUserMessages(prev => [...prev, { type: "ai", text: response.data.response }]);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setUserMessages(prev => [...prev, { 
+        type: "ai", 
+        text: "Connection error. Please try again." 
+      }]);
+    }
+  };
   // Clear messages when component mounts
   useEffect(() => {
     clearMessages();
