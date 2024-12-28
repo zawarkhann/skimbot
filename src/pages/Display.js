@@ -1,14 +1,16 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAppContext } from "../AppContext";
 import './Display.css';
 import { pdfjs } from 'react-pdf';
+import { useNavigate } from "react-router-dom";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 
 const Chat = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const { filename, userMessages, clearMessages, aiResponses,setUserMessages } = useAppContext();
   const [inputMessage, setInputMessage] = useState("");
@@ -29,7 +31,7 @@ const Chat = () => {
       if (currentFile && (fileType === 'txt' || fileType === 'pdf')) {
         formData.append('file', currentFile);
       }
-
+  
       // Create custom axios instance with CORS configuration
       const axiosInstance = axios.create({
         baseURL: 'https://skimbot-server-5ffb32df2cc8.herokuapp.com',
@@ -43,7 +45,10 @@ const Chat = () => {
       const response = await axiosInstance.post('/chatting/', formData);
       
       if (response.data?.response) {
-        setUserMessages(prev => [...prev, { type: "ai", text: response.data.response }]);
+        // Replace '\n' with HTML line breaks for proper rendering
+        const formattedResponse = response.data.response.replace(/\n/g, '<br />');
+        
+        setUserMessages(prev => [...prev, { type: "ai", text: formattedResponse }]);
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -233,6 +238,10 @@ const Chat = () => {
     }
   }, [currentFile, fileType]);
 
+  
+  const goToHome = () =>{
+    navigate("/")
+  }
   return (
     <div style={{ display: "flex", height: "100vh", width: "100%" }}>
       {/* Vertical Navbar */}
@@ -247,7 +256,8 @@ const Chat = () => {
           padding: "10px 0",
         }}
       >
-        <div style={{ marginBottom: "20px" }}>
+        <div style={{ marginBottom: "20px", cursor:"pointer" }}
+        onClick={goToHome}>
           <img
             src="/icon.png"
             alt="Logo"
@@ -334,53 +344,54 @@ const Chat = () => {
             <option value="review">Review</option>
           </select>
 
-          <div className="bg-[#4F46E5] text-white px-4 py-2 rounded-full flex items-center gap-2 hover:bg-purple-700">
+          <div className="bg-[#4F46E5] text-white px-4 py-2 rounded-full flex items-center gap-2 hover:bg-purple-700 cursor-pointer">
             <span className="text-[16px] leading-[22px] font-bold font-['Plus_Jakarta_Sans'] tracking-[-0.007em]">
               Download Now
             </span>
-            <img src="/Download.png" alt="Download" className="h-auto w-auto" />
+            <img src="/Download.png" alt="Download" className="h-auto w-auto cursor-pointer" />
           </div>
         </div>
 
         <hr style={{ border: "1px solid #ddd", marginBottom: "20px" }} />
 
         <div
-          ref={chatContainerRef}
-          className="flex-1 overflow-y-auto p-6 space-y-4"
-        >
-          {userMessages.map((msg, index) => (
-            <div
-              key={index}
-              className={`flex items-start ${
-                msg.type === "user" ? "justify-end" : "justify-start"
-              }`}
-            >
-              {msg.type === "user" ? (
-                <>
-                  <div className="bg-[#635DFF] text-white rounded-lg py-2 px-4 max-w-md">
-                    {msg.text}
-                  </div>
-                  <img
-                    src="/client.png"
-                    alt="User"
-                    className="ml-2 w-8 h-8 rounded-full object-cover"
-                  />
-                </>
-              ) : (
-                <>
-                  <img
-                    src="/ai.png"
-                    alt="AI"
-                    className="mr-2 w-8 h-8 rounded-full object-cover"
-                  />
-                  <div className="bg-white border rounded-lg p-4 shadow-sm max-w-md">
-                    <p className="text-gray-700">{msg.text}</p>
-                  </div>
-                </>
-              )}
-            </div>
-          ))}
-        </div>
+  ref={chatContainerRef}
+  className="flex-1 overflow-y-auto p-6 space-y-4"
+>
+  {userMessages.map((msg, index) => (
+    <div
+      key={index}
+      className={`flex items-start ${
+        msg.type === "user" ? "justify-end" : "justify-start"
+      }`}
+    >
+      {msg.type === "user" ? (
+        <>
+          <div className="bg-[#635DFF] text-white rounded-lg py-2 px-4 max-w-md">
+            {msg.text}
+          </div>
+          <img
+            src="/client.png"
+            alt="User"
+            className="ml-2 w-8 h-8 rounded-full object-cover"
+          />
+        </>
+      ) : (
+        <>
+          <img
+            src="/ai.png"
+            alt="AI"
+            className="mr-2 w-8 h-8 rounded-full object-cover"
+          />
+          <div
+            className="bg-white border rounded-lg p-4 shadow-sm max-w-md"
+            dangerouslySetInnerHTML={{ __html: msg.text }}
+          />
+        </>
+      )}
+    </div>
+  ))}
+</div>
 
         <div className="flex items-center p-4 border-t bg-white">
           <input
@@ -389,6 +400,11 @@ const Chat = () => {
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             className="flex-1 p-3 border rounded-full outline-none focus:ring-2 focus:ring-blue-500"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSendMessage(); // Send the message when Enter is pressed
+              }
+            }}
           />
           <button
             onClick={handleSendMessage}

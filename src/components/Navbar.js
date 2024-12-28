@@ -8,7 +8,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 cursor-pointer">
             <img src="/Vector.png" alt="Project Logo" className="h-auto w-auto" />
             
           </div>
@@ -17,27 +17,27 @@ const Navbar = () => {
           <div className="flex-1 flex items-center justify-between">
             {/* Left-Side Links */}
             <div className="hidden md:flex space-x-8 ml-20"> {/* Add `ml-8` to create space */}
-              <a href="/" className="text-gray-600 hover:text-purple-600">
+              <a href="/" className="text-gray-600 hover:text-purple-600 cursor-pointer">
                 Home
               </a>
-              <a href="/product" className="text-gray-600 hover:text-purple-600">
+              <a href="/" className="text-gray-600 hover:text-purple-600 cursor-pointer">
                 Product
               </a>
-              <a href="/services" className="text-gray-600 hover:text-purple-600">
+              <a href="/" className="text-gray-600 hover:text-purple-600 cursor-pointer">
                 Services
               </a>
             </div>
 
             {/* Right-Side Buttons */}
             <div className="hidden md:flex space-x-4">
-              <div className="bg-[#4F46E5] text-white px-4 py-2 rounded-full flex items-center gap-2 hover:bg-purple-700">
+              <div className="bg-[#4F46E5] text-white px-4 py-2 rounded-full flex items-center gap-2 hover:bg-purple-700 cursor-pointer">
                 <span className="text-[16px] leading-[22px] font-bold font-['Plus_Jakarta_Sans'] tracking-[-0.007em]">
                   Download Now
                 </span>
                 <img src="/Download.png" alt="Download" className="h-auto w-auto" />
               </div>
 
-              <div className="bg-[#EEF2FF] text-[#4F46E5] font-['Plus_Jakarta_Sans'] rounded-full px-4 py-2 flex items-center gap-2 hover:bg-gray-400">
+              <div className="bg-[#EEF2FF] text-[#4F46E5] font-['Plus_Jakarta_Sans'] rounded-full px-4 py-2 flex items-center gap-2 hover:bg-gray-400 cursor-pointer">
                 <span className="text-[16px] leading-[22px] font-bold tracking-[-0.007em]">Sign Up Now</span>
                 <img src="/SignIn.png" alt="Sign In" className="h-auto w-auto" />
               </div>
