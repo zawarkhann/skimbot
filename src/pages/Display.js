@@ -357,6 +357,12 @@ const Chat = () => {
         <div
   ref={chatContainerRef}
   className="flex-1 overflow-y-auto p-6 space-y-4"
+  // style={{
+  //   backgroundImage: "url('/white.jpg')",
+  //   backgroundSize: "cover",
+  //   backgroundRepeat: "no-repeat",
+  //   backgroundPosition: "center",
+  // }}
 >
   {userMessages.map((msg, index) => (
     <div
@@ -401,10 +407,10 @@ const Chat = () => {
             onChange={(e) => setInputMessage(e.target.value)}
             className="flex-1 p-3 border rounded-full outline-none focus:ring-2 focus:ring-blue-500"
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSendMessage(); // Send the message when Enter is pressed
-              }
-            }}
+      if (e.key === "Enter") {
+        handleSendMessage(); // Send the message when Enter is pressed
+      }
+    }}
           />
           <button
             onClick={handleSendMessage}
